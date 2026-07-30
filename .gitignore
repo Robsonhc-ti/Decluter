@@ -1,0 +1,26 @@
+# Ambientes Virtuais (Pastas pesadas do Python)
+myvenv/
+env/
+venv/
+ENV/
+
+# Arquivos de Configuração Secreta (Dados sensíveis)
+.env
+
+# Arquivos temporários do Python (Gerados automaticamente)
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Banco de dados padrão do Django (Não enviar o banco local pro Git)
+db.sqlite3
+db.sqlite3-journal
+
+# Pastas de mídia/Uploads dos usuários (Opcional, mas recomendado)
+media/
+
+# Pastas do VS Code ou outros editores
+.vscode/
+.idea/
