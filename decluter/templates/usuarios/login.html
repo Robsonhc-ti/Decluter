@@ -1,86 +1,77 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
     <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
-    <title>
-        Entrar | Decluter
-    </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Decluter</title>
+    <link rel="stylesheet" href="{% static 'usuarios/style.css' %}">
 </head>
-
 <body>
 
-    <main>
+    <main class="login-container">
+        
+        <!-- Lado Esquerdo: Formulário Dinâmico -->
+        <section class="login-form-side">
+            <div class="form-wrapper">
+                
+                <!-- Logo -->
+                <div class="logo">
+                    <span class="logo-icon"></span>
+                    <h1>Decluter</h1>
+                </div>
 
-        <h1>
-            Bem-vindo ao Decluter
-        </h1>
+                <!-- Abas de Navegação -->
+                <div class="tabs">
+                    <button class="tab-btn active" id="tab-entrar">Entrar</button>
+                    <button class="tab-btn" id="tab-criar">Criar conta</button>
+                </div>
 
-        <p>
-            Entre para organizar seus projetos e estudos.
-        </p>
+                <!-- Formulário -->
+                <form id="auth-form">
+                    <!-- Campo Nome (oculto por padrão no modo Entrar) -->
+                    <div class="input-group hidden" id="group-name">
+                        <label for="name">Nome</label>
+                        <input type="text" id="name" placeholder="Seu nome">
+                    </div>
 
-        <form>
+                    <div class="input-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" placeholder="nome@escola.com" required>
+                    </div>
 
-            <div>
+                    <div class="input-group">
+                        <label for="password">Senha</label>
+                        <input type="password" id="password" placeholder="Sua senha" required>
+                    </div>
 
-                <label for="email">
-                    E-mail
-                </label>
+                    <button type="submit" class="submit-btn" id="submit-btn">Entrar</button>
+                </form>
 
-                <input
-                    type="email"
-                    id="email"
-                    placeholder="Digite seu e-mail"
-                >
+                <!-- Rodapé do Formulário Alterável -->
+                <div class="form-footer" id="form-footer">
+                    <p class="social-login">Ou continue com Google</p>
+                </div>
 
             </div>
+        </section>
 
-
-            <div>
-
-                <label for="senha">
-                    Senha
-                </label>
-
-                <input
-                    type="password"
-                    id="senha"
-                    placeholder="Digite sua senha"
-                >
-
+        <!-- Lado Direito: Ilustração Esquemática -->
+        <section class="login-illustration-side">
+            <div class="skeleton-card">
+                <div class="skeleton-line long"></div>
+                <div class="skeleton-line short"></div>
             </div>
-
-
-            <button type="submit">
-
-                Entrar
-
-            </button>
-
-        </form>
-
-
-        <p>
-
-            Ainda não possui uma conta?
-
-            <a href="/cadastro/">
-
-                Criar conta
-
-            </a>
-
-        </p>
+            <div class="skeleton-card">
+                <div class="skeleton-line long"></div>
+                <div class="skeleton-line short"></div>
+            </div>
+        </section>
 
     </main>
 
-</body>
+    <!-- Script de Interatividade -->
+    <script src="{% static 'usuarios/scripts.js' %}"></script>
 
+</body>
 </html>
