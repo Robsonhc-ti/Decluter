@@ -1,0 +1,50 @@
+.app-shell {
+    display: flex;
+    min-height: 100vh;
+}
+
+.sidebar {
+    width: 220px;
+    background: var(--surface-1);
+    border-right: 0.5px solid var(--border);
+    padding: 1.5rem 1rem;
+    flex-shrink: 0;
+}
+
+.sidebar-logo {
+    font-weight: 500;
+    font-size: 15px;
+    margin-bottom: 24px;
+    padding-left: 8px;
+}
+
+.sidebar-label {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin: 0 0 6px 8px;
+}
+
+.sidebar-item {
+    display: block;
+    padding: 8px 10px;
+    border-radius: 6px;
+    font-size: 13px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    margin-bottom: 2px;
+}
+
+.sidebar-item:hover {
+    background: var(--surface-2);
+}
+
+.sidebar-item.active {
+    background: var(--surface-2);
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+.app-content {
+    flex: 1;
+    padding: 1.75rem;
+}

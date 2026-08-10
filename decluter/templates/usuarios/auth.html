@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Entrar — Decluter{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'usuarios/style.css' %}">
+{% endblock %}
+
+{% block body %}
+<main class="login-container">
+
+    <section class="login-form-side">
+        <div class="form-wrapper">
+
+            <div class="logo">
+                <span class="logo-icon"></span>
+                <h1>Decluter</h1>
+            </div>
+
+            <div class="tabs">
+                <button class="tab-btn active" id="tab-entrar">Entrar</button>
+                <button class="tab-btn" id="tab-criar">Criar conta</button>
+            </div>
+
+           <form id="auth-form" method="post">
+                {% csrf_token %}
+
+                {% if erro %}
+                    <p class="erro-form">{{ erro }}</p>
+                {% endif %}
+
+                <div class="input-group hidden" id="group-name">
+                    <label for="username">Nome</label>
+                    <input type="text" id="username" name="username" placeholder="Seu nome">
+                </div>
+
+                <div class="input-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" placeholder="nome@escola.com" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="password">Senha</label>
+                    <input type="password" id="password" name="password1" placeholder="Sua senha" required>
+                </div>
+
+                <div class="input-group hidden" id="group-confirmar-senha">
+                    <label for="password2">Confirmar senha</label>
+                    <input type="password" id="password2" name="password2" placeholder="Repita a senha">
+                </div>
+
+                <button type="submit" class="submit-btn" id="submit-btn" name="entrar">Entrar</button>
+            </form>
+
+            <div class="form-footer" id="form-footer">
+                <p class="social-login">Ou continue com Google</p>
+            </div>
+
+        </div>
+    </section>
+
+    <section class="login-illustration-side">
+        <div class="skeleton-card">
+            <div class="skeleton-line long"></div>
+            <div class="skeleton-line short"></div>
+        </div>
+        <div class="skeleton-card">
+            <div class="skeleton-line long"></div>
+            <div class="skeleton-line short"></div>
+        </div>
+    </section>
+
+</main>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'usuarios/scripts.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends "base_app.html" %}
+
+{% block title %}{{ cronograma.nome }} — Decluter{% endblock %}
+
+{% block content %}
+<h2>{{ cronograma.nome }}</h2>
+<p class="content-subtitle">{{ cronograma.tema }} — {{ cronograma.get_nivel_display }}</p>
+
+<ul>
+    {% for etapa in cronograma.etapas.all %}
+        <li>{{ etapa.ordem }}. {{ etapa.titulo }}</li>
+    {% endfor %}
+</ul>
+{% endblock %}

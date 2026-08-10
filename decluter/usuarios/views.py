@@ -1,19 +1,29 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.contrib.auth import login, authenticate, logout
+from django.contrib.auth.decorators import login_required
+from .forms import CadastroForm
 
 
-def login_view(request):
-    return render(
-        request,
-        "usuarios/login.html"
-    )
+def auth_view(request):
+    erro = None
 
+    if request.method == "POST":
+        if "criar_conta" in request.POST:
+            form = CadastroForm(request.POST)
+            if form.is_valid():
+                usuario = form.save()
+                login(request, usuario)
+                return redirect("cronogramas:lista")
+            else:
+                erro = form.errors.as_text()
+        else:
+            email = request.POST.get("email")
+            senha = request.POST.get("password")
+            usuario = authenticate(request, username=email, password=senha)
+            if usuario is not None:
+                login(request, usuario)
+                return redirect("cronogramas:lista")
+            else:
+                erro = "Email ou senha incorretos."
 
-def cadastro_view(request):
-    return render(
-        request,
-        "usuarios/cadastro.html"
-    )
-
-def perfil_view(request):
-    
-    return render(request, 'perfil.html')
+    return render(request, "usuarios/auth.html", {"erro": erro})

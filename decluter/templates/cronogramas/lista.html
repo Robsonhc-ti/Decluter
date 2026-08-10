@@ -1,0 +1,26 @@
+{% extends "base_app.html" %}
+
+{% block title %}Cronogramas — Decluter{% endblock %}
+
+{% block content %}
+<div class="content-header">
+    <div>
+        <h2>Meus cronogramas</h2>
+        <p class="content-subtitle">Só você vê e edita esses planos</p>
+    </div>
+    <a href="{% url 'cronogramas:criar' %}" class="btn-primary">+ Novo cronograma</a>
+</div>
+
+{% if cronogramas %}
+    <div class="cronograma-lista">
+        {% for c in cronogramas %}
+        <div class="cronograma-card">
+            <div class="cronograma-nome">{{ c.nome }}</div>
+            <div class="cronograma-info">{{ c.tema }} — {{ c.get_nivel_display }}</div>
+        </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <p class="content-subtitle">Você ainda não tem nenhum cronograma. Crie o primeiro!</p>
+{% endif %}
+{% endblock %}

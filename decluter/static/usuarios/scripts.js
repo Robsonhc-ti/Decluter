@@ -1,42 +1,26 @@
-// Seleção dos elementos do DOM
 const tabEntrar = document.getElementById('tab-entrar');
 const tabCriar = document.getElementById('tab-criar');
 const groupName = document.getElementById('group-name');
-const inputName = document.getElementById('name');
-const inputPassword = document.getElementById('password');
+const groupConfirmarSenha = document.getElementById('group-confirmar-senha');
 const submitBtn = document.getElementById('submit-btn');
-const formFooter = document.getElementById('form-footer');
 
-// Função para mudar para a tela de Login
-tabEntrar.addEventListener('click', () => {
-    tabCriar.classList.remove('active');
+function mostrarEntrar() {
     tabEntrar.classList.add('active');
-    
-    // Oculta campo nome e remove obrigatoriedade
+    tabCriar.classList.remove('active');
     groupName.classList.add('hidden');
-    inputName.removeAttribute('required');
-    
-    // Atualiza placeholders e textos
-    inputPassword.placeholder = "Sua senha";
-    submitBtn.textContent = "Entrar";
-    
-    // Altera o rodapé
-    formFooter.innerHTML = '<p class="social-login">Ou continue com Google</p>';
-});
+    groupConfirmarSenha.classList.add('hidden');
+    submitBtn.textContent = 'Entrar';
+    submitBtn.name = 'entrar';
+}
 
-// Função para mudar para a tela de Cadastro
-tabCriar.addEventListener('click', () => {
-    tabEntrar.classList.remove('active');
+function mostrarCriarConta() {
     tabCriar.classList.add('active');
-    
-    // Mostra campo nome e adiciona obrigatoriedade
+    tabEntrar.classList.remove('active');
     groupName.classList.remove('hidden');
-    inputName.setAttribute('required', '');
-    
-    // Atualiza placeholders e textos
-    inputPassword.placeholder = "Crie uma senha";
-    submitBtn.textContent = "Criar conta";
-    
-    // Altera o rodapé
-    formFooter.innerHTML = '<p class="terms-text">Ao continuar, você concorda com os termos de uso</p>';
-});
+    groupConfirmarSenha.classList.remove('hidden');
+    submitBtn.textContent = 'Criar conta';
+    submitBtn.name = 'criar_conta';
+}
+
+tabEntrar.addEventListener('click', mostrarEntrar);
+tabCriar.addEventListener('click', mostrarCriarConta);
