@@ -1,6 +1,6 @@
 #  Decluter
 
-> Sistema simples e intuitivo de gestão de projetos escolares e planejamento de estudos individuais assistido por Inteligência Artificial.
+> Sistema de gestão de projetos escolares e planejamento de estudos individuais.
 
 ---
 
