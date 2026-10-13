@@ -1,0 +1,146 @@
+:root {
+    --pastel-laranja: #FFE4D6;
+    --pastel-laranja-icone: #FF8A5C;
+    --pastel-cinza: #F0F0F2;
+}
+
+[data-theme="dark"] {
+    --pastel-laranja: #4a3326;
+    --pastel-laranja-icone: #ff9d76;
+    --pastel-cinza: #2a2a2d;
+}
+
+.dash-titulo {
+    font-size: 24px;
+    margin-bottom: 2px;
+}
+
+.dash-subtitulo {
+    color: var(--text-secondary);
+    font-size: 13px;
+    margin-bottom: 24px;
+}
+
+.dash-cards {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.dash-card {
+    flex: 1;
+    background: var(--pastel-cinza);
+    border-radius: 12px;
+    padding: 16px;
+    cursor: pointer;
+    transition: transform 0.1s;
+}
+
+.dash-card:hover {
+    transform: translateY(-2px);
+}
+
+.dash-card-icone {
+    width: 36px;
+    height: 36px;
+    background: var(--pastel-laranja);
+    color: var(--pastel-laranja-icone);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+
+.dash-card-label {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-bottom: 6px;
+}
+
+.dash-card-numero {
+    font-size: 22px;
+    font-weight: 600;
+}
+
+.dash-boxes {
+    display: flex;
+    gap: 16px;
+}
+
+.dash-box {
+    flex: 1;
+    background: var(--pastel-cinza);
+    border-radius: 12px;
+    padding: 16px;
+}
+
+.dash-box h3 {
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.dash-box-scroll {
+    max-height: 180px;
+    overflow-y: auto;
+}
+
+.dash-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px;
+    border-radius: 6px;
+    text-decoration: none;
+    color: var(--text-primary);
+    font-size: 13px;
+}
+
+.dash-item:hover {
+    background: var(--surface-1);
+}
+
+.dash-item-meta {
+    color: var(--text-muted);
+    font-size: 11px;
+}
+
+.dash-vazio {
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.dash-popup-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.3);
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+}
+
+.dash-popup-overlay.aberto {
+    display: flex;
+}
+
+.dash-popup {
+    background: var(--surface-1);
+    border-radius: 12px;
+    padding: 20px;
+    width: 360px;
+    max-height: 70vh;
+    overflow-y: auto;
+}
+
+.dash-popup-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.dash-popup-fechar {
+    cursor: pointer;
+    font-size: 18px;
+    color: var(--text-secondary);
+}

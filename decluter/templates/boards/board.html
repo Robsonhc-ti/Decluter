@@ -1,0 +1,63 @@
+{% extends "base_app.html" %}
+{% load static %}
+
+{% block title %}{{ projeto.nome }} — Decluter{% endblock %}
+
+{% block extra_css %}
+{{ block.super }}
+<link rel="stylesheet" href="{% static 'css/board.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="content-header">
+    <div>
+        <h2>{{ projeto.nome }}</h2>
+        {% if projeto.descricao %}<p class="content-subtitle">{{ projeto.descricao }}</p>{% endif %}
+    </div>
+    <a href="{% url 'projetos:lista' %}" class="btn-secondary">← Projetos</a>
+</div>
+
+<div class="board">
+    {% for coluna in colunas %}
+    <section class="board-coluna">
+        <h3 class="board-coluna-titulo">{{ coluna.nome }} <span>{{ coluna.tarefas.count }}</span></h3>
+
+        {% for tarefa in coluna.tarefas.all %}
+        <article class="tarefa-card prio-{{ tarefa.prioridade }} {% if tarefa_destaque == tarefa.pk|stringformat:'s' %}destaque{% endif %}">
+            <div class="tarefa-titulo">{{ tarefa.titulo }}</div>
+            <div class="tarefa-meta">
+                <span>{{ tarefa.get_prioridade_display }}</span>
+                {% if tarefa.prazo %}<span>{{ tarefa.prazo|date:"d/m/Y" }}</span>{% endif %}
+            </div>
+            <form method="post" action="{% url 'boards:tarefa_mover' tarefa.pk %}">
+                {% csrf_token %}
+                <select name="coluna" onchange="this.form.submit()">
+                    {% for c in colunas %}
+                    <option value="{{ c.pk }}" {% if c.pk == coluna.pk %}selected{% endif %}>{{ c.nome }}</option>
+                    {% endfor %}
+                </select>
+            </form>
+        </article>
+        {% empty %}
+        <p class="content-subtitle">Sem tarefas.</p>
+        {% endfor %}
+
+        <form method="post" action="{% url 'boards:tarefa_criar' projeto.pk %}" class="tarefa-nova">
+            {% csrf_token %}
+            <input type="hidden" name="coluna" value="{{ coluna.pk }}">
+            <input type="text" name="titulo" placeholder="+ Nova tarefa" required>
+            <div class="tarefa-nova-linha">
+                <select name="prioridade">
+                    <option value="baixa">Baixa</option>
+                    <option value="media" selected>Média</option>
+                    <option value="alta">Alta</option>
+                    <option value="urgente">Urgente</option>
+                </select>
+                <input type="date" name="prazo">
+            </div>
+            <button type="submit" class="btn-primary">Adicionar</button>
+        </form>
+    </section>
+    {% endfor %}
+</div>
+{% endblock %}

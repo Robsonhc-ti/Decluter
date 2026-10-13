@@ -1,0 +1,93 @@
+{% extends "base_app.html" %}
+{% load static %}
+
+{% block title %}Início — Decluter{% endblock %}
+
+{% block extra_css %}
+{{ block.super }}
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+{% endblock %}
+
+{% block content %}
+<h1 class="dash-titulo">Olá, {{ request.user.username }}</h1>
+<p class="dash-subtitulo">Seja bem-vindo ao Decluter, aqui está a sua nova jornada</p>
+
+<div class="dash-cards">
+    <div class="dash-card" data-popup="popup-pendentes">
+        <div class="dash-card-icone">📋</div>
+        <div class="dash-card-label">Tarefas Pendentes</div>
+        <div class="dash-card-numero">{{ qtd_pendentes }}</div>
+    </div>
+    <div class="dash-card" data-popup="popup-cronogramas">
+        <div class="dash-card-icone">📅</div>
+        <div class="dash-card-label">Cronogramas Pendentes</div>
+        <div class="dash-card-numero">{{ qtd_cronogramas_pendentes }}</div>
+    </div>
+    <div class="dash-card" data-popup="popup-atrasadas">
+        <div class="dash-card-icone">⚠️</div>
+        <div class="dash-card-label">Tarefas Atrasadas</div>
+        <div class="dash-card-numero">{{ qtd_atrasadas }}</div>
+    </div>
+</div>
+
+<div class="dash-boxes">
+    <div class="dash-box">
+        <h3>Projetos Recentes</h3>
+        <div class="dash-box-scroll">
+            {% for pm in projetos_recentes %}
+            <a href="{% url 'boards:detalhe' pm.projeto.pk %}" class="dash-item">
+                <span>{{ pm.projeto.nome }}</span>
+                <span class="dash-item-meta">
+                    {% if pm.ultimo_acesso %}último acesso: {{ pm.ultimo_acesso|date:"d/m/Y" }}{% else %}ainda não acessado{% endif %}
+                </span>
+            </a>
+            {% empty %}
+            <p class="dash-vazio">Nenhum projeto ainda.</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="dash-box">
+        <h3>Próximos eventos</h3>
+        <div class="dash-box-scroll">
+            {% for tarefa in proximos_eventos %}
+            <a href="{% url 'boards:detalhe' tarefa.coluna.board.projeto.pk %}?tarefa={{ tarefa.pk }}" class="dash-item">
+                <span>{{ tarefa.titulo }}</span>
+                <span class="dash-item-meta">{{ tarefa.prazo|date:"d/m/Y" }}</span>
+            </a>
+            {% empty %}
+            <p class="dash-vazio">Nenhum evento próximo.</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<div class="dash-popup-overlay" id="popup-pendentes">
+    <div class="dash-popup">
+        <div class="dash-popup-header"><h3>Tarefas Pendentes</h3><span class="dash-popup-fechar">&times;</span></div>
+        {% for tarefa in tarefas_pendentes %}
+        <a href="{% url 'boards:detalhe' tarefa.coluna.board.projeto.pk %}?tarefa={{ tarefa.pk }}" class="dash-item">{{ tarefa.titulo }}</a>
+        {% empty %}<p class="dash-vazio">Nenhuma tarefa pendente.</p>{% endfor %}
+    </div>
+</div>
+
+<div class="dash-popup-overlay" id="popup-atrasadas">
+    <div class="dash-popup">
+        <div class="dash-popup-header"><h3>Tarefas Atrasadas</h3><span class="dash-popup-fechar">&times;</span></div>
+        {% for tarefa in tarefas_atrasadas %}
+        <a href="{% url 'boards:detalhe' tarefa.coluna.board.projeto.pk %}?tarefa={{ tarefa.pk }}" class="dash-item">{{ tarefa.titulo }} — venceu {{ tarefa.prazo|date:"d/m" }}</a>
+        {% empty %}<p class="dash-vazio">Nenhuma tarefa atrasada. 🎉</p>{% endfor %}
+    </div>
+</div>
+
+<div class="dash-popup-overlay" id="popup-cronogramas">
+    <div class="dash-popup">
+        <div class="dash-popup-header"><h3>Cronogramas Pendentes</h3><span class="dash-popup-fechar">&times;</span></div>
+        <a href="{% url 'cronogramas:lista' %}" class="dash-item">Ver todos os cronogramas</a>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/dashboard.js' %}"></script>
+{% endblock %}

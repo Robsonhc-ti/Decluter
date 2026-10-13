@@ -48,3 +48,37 @@
     flex: 1;
     padding: 1.75rem;
 }
+.content-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.content-subtitle {
+    color: var(--text-secondary);
+    font-size: 12px;
+}
+
+.cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 12px;
+}
+
+.card-item {
+    background: var(--surface-1);
+    border: 0.5px solid var(--border);
+    border-radius: 8px;
+    padding: 14px;
+}
+
+.card-item-titulo { font-weight: 500; font-size: 13px; margin-bottom: 4px; }
+.card-item-info { font-size: 11px; color: var(--text-secondary); }
+
+.form-pagina { max-width: 420px; }
+.form-pagina .input-group { margin-bottom: 14px; }
+.form-pagina textarea { width: 100%; resize: none; }
+
+.form-botoes { display: flex; gap: 8px; margin-top: 20px; }
+.btn-primary, .btn-secondary { text-decoration: none; display: inline-block; }

@@ -1,9 +1,7 @@
 <div class="sidebar-logo">Decluter</div>
 
 <p class="sidebar-label">Em equipe</p>
-<a href="#" class="sidebar-item">
-    Projetos
-</a>
+<a href="{% url 'projetos:lista' %}" class="sidebar-item">Projetos</a>
 
 <p class="sidebar-label">Individual</p>
 <a href="{% url 'cronogramas:lista' %}" class="sidebar-item active">
