@@ -1,0 +1,87 @@
+/* Configurações Gerais do Formulário */
+.form-cronograma {
+    max-width: 600px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: #333333;
+}
+
+/* Título */
+h2 {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+/* Descrição abaixo do título (caso adicione no HTML) */
+.form-subtitle {
+    font-size: 14px;
+    color: #666666;
+    margin-bottom: 24px;
+}
+
+/* Estrutura das linhas do Django ({{ form.as_p }}) */
+.form-cronograma p {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Labels dos campos */
+.form-cronograma label {
+    font-size: 13px;
+    font-weight: 500;
+    color: #555555;
+    margin-bottom: 8px;
+}
+
+/* Inputs de texto, Selects e Textareas */
+.form-cronograma input[type="text"],
+.form-cronograma select,
+.form-cronograma textarea {
+    width: 100%;
+    padding: 14px 16px;
+    font-size: 15px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background-color: #ffffff;
+    box-sizing: border-box;
+    transition: border-color 0.2s ease;
+}
+
+.form-cronograma input[type="text"]:focus,
+.form-cronograma select:focus,
+.form-cronograma textarea:focus {
+    border-color: #a0a0a0;
+    outline: none;
+}
+
+/* Placeholder */
+.form-cronograma input::placeholder,
+.form-cronograma textarea::placeholder {
+    color: #a0a0a0;
+}
+
+/* Área de texto (Complemento) */
+.form-cronograma textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+/* Botão Principal (Gerar Cronograma) */
+.btn-primary {
+    width: 100%;
+    padding: 14px;
+    background-color: #0d0d0d;
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    margin-top: 10px;
+}
+
+.btn-primary:hover {
+    background-color: #262626;
+}

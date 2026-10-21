@@ -1,0 +1,26 @@
+﻿{% extends "base_app.html" %}
+
+{% block title %}Projetos — Decluter{% endblock %}
+
+{% block content %}
+<div class="content-header">
+    <div>
+        <h2>Projetos</h2>
+        <p class="content-subtitle">Trabalhos em grupo com sua turma</p>
+    </div>
+    <a href="{% url 'projetos:criar' %}" class="btn-primary">+ Novo projeto</a>
+</div>
+
+{% if participacoes %}
+<div class="cards-grid">
+{% for p in participacoes %}
+<a href="{% url 'boards:detalhe' p.projeto.pk %}" class="card-item card-link">
+    <div class="card-item-titulo">{{ p.projeto.nome }}</div>
+    <div class="card-item-info">{{ p.get_papel_display }}</div>
+</a>
+{% endfor %}
+</div>
+{% else %}
+<p class="content-subtitle">Você ainda não participa de nenhum projeto. Crie o primeiro!</p>
+{% endif %}
+{% endblock %}

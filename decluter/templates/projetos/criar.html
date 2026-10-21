@@ -1,0 +1,33 @@
+﻿{% extends "base_app.html" %}
+
+{% block title %}Novo projeto — Decluter{% endblock %}
+
+{% block content %}
+<div class="form-pagina">
+    <h2>Novo projeto</h2>
+    <p class="content-subtitle">Crie um espaço pra organizar um trabalho em equipe</p>
+
+    <form method="post">
+        {% csrf_token %}
+
+        {% if form.errors %}
+        <p class="erro-form">Confira os campos e tente novamente.</p>
+        {% endif %}
+
+        <div class="input-group">
+            <label for="nome">Nome do projeto</label>
+            <input type="text" id="nome" name="nome" placeholder="Ex: Feira de Ciências" required>
+        </div>
+
+        <div class="input-group">
+            <label for="descricao">Descrição (opcional)</label>
+            <textarea id="descricao" name="descricao" rows="3" placeholder="Do que se trata esse projeto?"></textarea>
+        </div>
+
+        <div class="form-botoes">
+            <a href="{% url 'projetos:lista' %}" class="btn-secondary">Cancelar</a>
+            <button type="submit" class="btn-primary">Criar projeto</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

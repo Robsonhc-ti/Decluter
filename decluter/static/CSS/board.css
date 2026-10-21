@@ -1,0 +1,58 @@
+.board {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    overflow-x: auto;
+}
+
+.board-coluna {
+    flex: 1;
+    min-width: 260px;
+    background: var(--surface-2);
+    border-radius: 10px;
+    padding: 12px;
+}
+
+.board-coluna-titulo {
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.board-coluna-titulo span { color: var(--text-muted); font-weight: 400; }
+
+.tarefa-card {
+    background: var(--surface-1);
+    border: 0.5px solid var(--border);
+    border-left: 3px solid var(--border);
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 8px;
+}
+
+.tarefa-card.prio-media { border-left-color: #60a5fa; }
+.tarefa-card.prio-alta { border-left-color: #fb923c; }
+.tarefa-card.prio-urgente { border-left-color: #ef4444; }
+.tarefa-card.destaque { outline: 2px solid var(--text-primary); }
+
+.tarefa-titulo { font-size: 13px; font-weight: 500; margin-bottom: 6px; }
+
+.tarefa-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+}
+
+.tarefa-card select { width: 100%; font-size: 12px; }
+
+.tarefa-nova { margin-top: 10px; display: flex; flex-direction: column; gap: 6px; }
+.tarefa-nova input[type="text"] { width: 100%; }
+.tarefa-nova-linha { display: flex; gap: 6px; }
+.tarefa-nova-linha select, .tarefa-nova-linha input { flex: 1; min-width: 0; }
+
+.card-link { text-decoration: none; color: inherit; display: block; }
+.card-link:hover { border-color: var(--text-muted); }
