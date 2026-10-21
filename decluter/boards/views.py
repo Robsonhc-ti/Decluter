@@ -1,15 +1,15 @@
-from django.shortcuts import render, redirect, get_object_or_404
+﻿from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.db.models import Prefetch
 from django.utils import timezone
 from django.views.decorators.http import require_POST
-from projetos.models import ProjetoMembro
+from projetos.models import MembroProjeto
 from .models import Board, Coluna, Tarefa
 
 
 def _membro_ou_404(request, projeto_pk):
     # Só deixa passar quem participa do projeto
-    return get_object_or_404(ProjetoMembro, projeto__pk=projeto_pk, usuario=request.user)
+    return get_object_or_404(MembroProjeto, projeto__pk=projeto_pk, usuario=request.user)
 
 
 @login_required
