@@ -1,0 +1,63 @@
+{% extends "base_app.html" %}
+
+{% block title %}Membros — {{ projeto.nome }}{% endblock %}
+
+{% block content %}
+{% if messages %}
+<ul class="mensagens">
+    {% for m in messages %}
+    <li class="mensagem mensagem--{{ m.tags }}">{{ m }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+<header class="membros-cabecalho">
+    <a href="{% url 'boards:detalhe' projeto.id %}">&larr; {{ projeto.nome }}</a>
+    <h1>Membros</h1>
+</header>
+
+{% if eh_admin %}
+<form method="post" action="{% url 'projetos:membro_adicionar' projeto.id %}" class="membro-adicionar-form">
+    {% csrf_token %}
+    <input type="email" name="email" placeholder="E-mail de quem tem conta no Decluter" required>
+    <button type="submit">Adicionar</button>
+</form>
+{% endif %}
+
+<ul class="membros-lista">
+    {% for m in membros %}
+    <li class="membro">
+        <span class="membro-nome">{{ m.usuario.username }}</span>
+        <span class="membro-email">{{ m.usuario.email }}</span>
+
+        {% if eh_admin %}
+        <form method="post" action="{% url 'projetos:membro_papel' projeto.id m.usuario_id %}" class="membro-papel-form">
+            {% csrf_token %}
+            <select name="papel">
+                {% for valor, rotulo in papeis %}
+                <option value="{{ valor }}" {% if valor == m.papel %}selected{% endif %}>{{ rotulo }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit">Salvar papel</button>
+        </form>
+        {% else %}
+        <span class="membro-papel">{{ m.get_papel_display }}</span>
+        {% endif %}
+
+        {% if m.usuario_id == user.id %}
+        <form method="post" action="{% url 'projetos:membro_remover' projeto.id m.usuario_id %}"
+              onsubmit="return confirm('Sair deste projeto?');">
+            {% csrf_token %}
+            <button type="submit">Sair do projeto</button>
+        </form>
+        {% elif eh_admin %}
+        <form method="post" action="{% url 'projetos:membro_remover' projeto.id m.usuario_id %}"
+              onsubmit="return confirm('Remover este membro do projeto?');">
+            {% csrf_token %}
+            <button type="submit">Remover</button>
+        </form>
+        {% endif %}
+    </li>
+    {% endfor %}
+</ul>
+{% endblock %}

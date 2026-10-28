@@ -14,7 +14,7 @@
 {% if participacoes %}
 <div class="cards-grid">
 {% for p in participacoes %}
-<a href="{% url 'boards:detalhe' p.projeto.pk %}" class="card-item card-link">
+<a href="{% url 'boards:detalhe' p.projeto.id %}" class="card-item">
     <div class="card-item-titulo">{{ p.projeto.nome }}</div>
     <div class="card-item-info">{{ p.get_papel_display }}</div>
 </a>
