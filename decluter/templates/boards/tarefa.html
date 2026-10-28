@@ -1,0 +1,62 @@
+{% extends "base_app.html" %}
+
+{% block title %}{{ tarefa.titulo }} — Decluter{% endblock %}
+
+{% block content %}
+{% if messages %}
+<ul class="mensagens">
+    {% for m in messages %}
+    <li class="mensagem mensagem--{{ m.tags }}">{{ m }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+<header class="tarefa-cabecalho">
+    <a href="{% url 'boards:detalhe' projeto.id %}">&larr; {{ projeto.nome }}</a>
+    <h1>{{ tarefa.titulo }}</h1>
+
+    <div class="tarefa-acoes">
+        <a href="{% url 'boards:tarefa_editar' tarefa.id %}">Editar</a>
+        {% if eh_admin %}
+        <form method="post" action="{% url 'boards:tarefa_excluir' tarefa.id %}"
+              onsubmit="return confirm('Excluir esta tarefa? Essa ação não pode ser desfeita.');">
+            {% csrf_token %}
+            <button type="submit">Excluir</button>
+        </form>
+        {% endif %}
+    </div>
+</header>
+
+<section class="tarefa-detalhes">
+    <p><strong>Coluna:</strong> {{ tarefa.coluna.nome }}</p>
+    <p><strong>Prioridade:</strong> {{ tarefa.get_prioridade_display }}</p>
+    <p><strong>Prazo:</strong> {% if tarefa.prazo %}{{ tarefa.prazo|date:"d/m/Y" }}{% else %}Sem prazo{% endif %}</p>
+    <p><strong>Responsável:</strong> {% if tarefa.responsavel %}{{ tarefa.responsavel.username }}{% else %}Sem responsável{% endif %}</p>
+
+    <h2>Descrição</h2>
+    {% if tarefa.descricao %}
+    <p>{{ tarefa.descricao|linebreaksbr }}</p>
+    {% else %}
+    <p class="vazio">Esta tarefa ainda não tem descrição.</p>
+    {% endif %}
+</section>
+
+<section class="comentarios">
+    <h2>Comentários ({{ comentarios|length }})</h2>
+
+    {% for c in comentarios %}
+    <article class="comentario">
+        <p class="comentario-autor">{{ c.usuario.username }} <span class="comentario-data">{{ c.criado_em|date:"d/m/Y H:i" }}</span></p>
+        <p class="comentario-texto">{{ c.texto|linebreaksbr }}</p>
+    </article>
+    {% empty %}
+    <p class="vazio">Nenhum comentário ainda.</p>
+    {% endfor %}
+
+    <form method="post" action="{% url 'boards:comentario_criar' tarefa.id %}" class="comentario-form">
+        {% csrf_token %}
+        <textarea name="texto" rows="3" placeholder="Escreva um comentário" required></textarea>
+        <button type="submit">Comentar</button>
+    </form>
+</section>
+{% endblock %}

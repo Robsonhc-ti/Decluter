@@ -1,0 +1,17 @@
+{% extends "base_app.html" %}
+
+{% block title %}Editar tarefa — Decluter{% endblock %}
+
+{% block content %}
+<header class="tarefa-cabecalho">
+    <a href="{% url 'boards:tarefa_detalhe' tarefa.id %}">&larr; Voltar para a tarefa</a>
+    <h1>Editar tarefa</h1>
+</header>
+
+<form method="post" class="tarefa-editar-form">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Salvar</button>
+    <a href="{% url 'boards:tarefa_detalhe' tarefa.id %}">Cancelar</a>
+</form>
+{% endblock %}

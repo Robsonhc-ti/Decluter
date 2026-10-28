@@ -1,63 +1,70 @@
 ﻿{% extends "base_app.html" %}
-{% load static %}
 
 {% block title %}{{ projeto.nome }} — Decluter{% endblock %}
 
-{% block extra_css %}
-{{ block.super }}
-<link rel="stylesheet" href="{% static 'css/board.css' %}">
-{% endblock %}
-
 {% block content %}
-<div class="content-header">
-    <div>
-        <h2>{{ projeto.nome }}</h2>
-        {% if projeto.descricao %}<p class="content-subtitle">{{ projeto.descricao }}</p>{% endif %}
-    </div>
-    <a href="{% url 'projetos:lista' %}" class="btn-secondary">← Projetos</a>
-</div>
+{% if messages %}
+<ul class="mensagens">
+    {% for m in messages %}
+    <li class="mensagem mensagem--{{ m.tags }}">{{ m }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+<header class="board-cabecalho">
+    <a href="{% url 'projetos:lista' %}">&larr; Projetos</a>
+    <h1>{{ projeto.nome }}</h1>
+    <a href="{% url 'projetos:membros' projeto.id %}">Membros</a>
+    {% if projeto.descricao %}<p>{{ projeto.descricao }}</p>{% endif %}
+</header>
 
 <div class="board">
     {% for coluna in colunas %}
-    <section class="board-coluna">
-        <h3 class="board-coluna-titulo">{{ coluna.nome }} <span>{{ coluna.tarefas.count }}</span></h3>
+    <section class="coluna" data-coluna-id="{{ coluna.id }}">
+        <h2>{{ coluna.nome }} <span class="coluna-contagem">({{ coluna.tarefas.all|length }})</span></h2>
 
         {% for tarefa in coluna.tarefas.all %}
-        <article class="tarefa-card prio-{{ tarefa.prioridade }} {% if tarefa_destaque == tarefa.pk|stringformat:'s' %}destaque{% endif %}">
-            <div class="tarefa-titulo">{{ tarefa.titulo }}</div>
-            <div class="tarefa-meta">
-                <span>{{ tarefa.get_prioridade_display }}</span>
-                {% if tarefa.prazo %}<span>{{ tarefa.prazo|date:"d/m/Y" }}</span>{% endif %}
-            </div>
-            <form method="post" action="{% url 'boards:tarefa_mover' tarefa.pk %}">
+        <article class="tarefa tarefa--{{ tarefa.prioridade }}">
+            <h3><a href="{% url 'boards:tarefa_detalhe' tarefa.id %}">{{ tarefa.titulo }}</a></h3>
+            <p class="tarefa-prioridade">Prioridade: {{ tarefa.get_prioridade_display }}</p>
+            {% if tarefa.prazo %}<p class="tarefa-prazo">Prazo: {{ tarefa.prazo|date:"d/m/Y" }}</p>{% endif %}
+            {% if tarefa.responsavel %}<p class="tarefa-responsavel">Responsável: {{ tarefa.responsavel.username }}</p>{% endif %}
+
+            <form method="post" action="{% url 'boards:tarefa_mover' tarefa.id %}" class="tarefa-mover">
                 {% csrf_token %}
-                <select name="coluna" onchange="this.form.submit()">
+                <select name="coluna_id">
                     {% for c in colunas %}
-                    <option value="{{ c.pk }}" {% if c.pk == coluna.pk %}selected{% endif %}>{{ c.nome }}</option>
+                    <option value="{{ c.id }}" {% if c.id == tarefa.coluna_id %}selected{% endif %}>{{ c.nome }}</option>
                     {% endfor %}
                 </select>
+                <button type="submit">Mover</button>
             </form>
         </article>
         {% empty %}
-        <p class="content-subtitle">Sem tarefas.</p>
+        <p class="coluna-vazia">Sem tarefas</p>
         {% endfor %}
 
-        <form method="post" action="{% url 'boards:tarefa_criar' projeto.pk %}" class="tarefa-nova">
+        <form method="post" action="{% url 'boards:tarefa_criar' projeto.id %}" class="tarefa-form">
             {% csrf_token %}
-            <input type="hidden" name="coluna" value="{{ coluna.pk }}">
-            <input type="text" name="titulo" placeholder="+ Nova tarefa" required>
-            <div class="tarefa-nova-linha">
-                <select name="prioridade">
-                    <option value="baixa">Baixa</option>
-                    <option value="media" selected>Média</option>
-                    <option value="alta">Alta</option>
-                    <option value="urgente">Urgente</option>
-                </select>
-                <input type="date" name="prazo">
-            </div>
-            <button type="submit" class="btn-primary">Adicionar</button>
+            <input type="hidden" name="coluna_id" value="{{ coluna.id }}">
+            <input type="text" name="titulo" placeholder="Título da tarefa" maxlength="200" required>
+            <select name="prioridade">
+                {% for valor, rotulo in prioridades %}
+                <option value="{{ valor }}" {% if valor == "media" %}selected{% endif %}>{{ rotulo }}</option>
+                {% endfor %}
+            </select>
+            <input type="date" name="prazo">
+            <select name="responsavel">
+                <option value="">Sem responsável</option>
+                {% for m in membros %}
+                <option value="{{ m.id }}">{{ m.username }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit">Adicionar tarefa</button>
         </form>
     </section>
+    {% empty %}
+    <p>Este board ainda não tem colunas.</p>
     {% endfor %}
 </div>
 {% endblock %}
