@@ -1,0 +1,91 @@
+{% extends "base_app.html" %}
+
+{% block title %}Cronograma de faculdade — Decluter{% endblock %}
+
+{% block content %}
+{% if messages %}
+<ul class="mensagens">
+    {% for m in messages %}
+    <li class="mensagem mensagem--{{ m.tags }}">{{ m }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+<header class="cronograma-cabecalho">
+    <a href="{% url 'cronogramas:criar' %}">&larr; Novo cronograma</a>
+    <h1>Cronograma de faculdade</h1>
+    <p>Escolha a faculdade e o curso, e a IA pesquisa a grade curricular pública.</p>
+</header>
+
+<form method="post" class="cronograma-form"
+      onsubmit="var b=this.querySelector('button[type=submit]'); b.disabled=true; b.textContent='Pesquisando e gerando (pode levar até 1 minuto)...';">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Gerar cronograma</button>
+</form>
+
+<p class="aviso-ia">As informações são pesquisadas e geradas por inteligência artificial e podem não ser 100% precisas. Confira no site da instituição.</p>
+
+<script>
+(function () {
+    var urlSugestoes = "{% url 'cronogramas:sugestoes' %}";
+
+    function ligarAutocomplete(input, tipo) {
+        if (!input) return;
+
+        var lista = document.createElement("ul");
+        lista.className = "autocomplete-lista";
+        var aviso = document.createElement("p");
+        aviso.className = "autocomplete-aviso";
+        aviso.hidden = true;
+        input.insertAdjacentElement("afterend", lista);
+        lista.insertAdjacentElement("afterend", aviso);
+
+        var temporizador = null;
+        var ultimaBusca = 0;
+
+        input.addEventListener("input", function () {
+            clearTimeout(temporizador);
+            lista.innerHTML = "";
+            aviso.hidden = true;
+
+            var termo = input.value.trim();
+            if (termo.length < 2) return;
+
+            temporizador = setTimeout(async function () {
+                var numero = ++ultimaBusca;
+                try {
+                    var resposta = await fetch(urlSugestoes + "?tipo=" + tipo + "&q=" + encodeURIComponent(termo));
+                    var dados = await resposta.json();
+                    if (numero !== ultimaBusca) return;
+
+                    lista.innerHTML = "";
+                    if (dados.resultados.length === 0) {
+                        aviso.textContent = "Não encontramos \"" + termo.toUpperCase() +
+                            "\" na nossa lista. Você pode continuar mesmo assim: a IA vai tentar pesquisar.";
+                        aviso.hidden = false;
+                        return;
+                    }
+
+                    dados.resultados.forEach(function (nome) {
+                        var item = document.createElement("li");
+                        item.textContent = nome.toUpperCase();
+                        item.addEventListener("click", function () {
+                            input.value = nome.toUpperCase();
+                            lista.innerHTML = "";
+                            aviso.hidden = true;
+                        });
+                        lista.appendChild(item);
+                    });
+                } catch (erro) {
+                    /* sem sugestões: o aluno ainda pode digitar livremente */
+                }
+            }, 250);
+        });
+    }
+
+    ligarAutocomplete(document.getElementById("id_instituicao"), "instituicao");
+    ligarAutocomplete(document.getElementById("id_curso"), "curso");
+})();
+</script>
+{% endblock %}

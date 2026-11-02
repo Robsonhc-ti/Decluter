@@ -4,6 +4,11 @@ from core.models import ModeloBase
 
 
 class Cronograma(ModeloBase):
+    class Tipo(models.TextChoices):
+        TEMA = "tema", "Tema livre"
+        FACULDADE = "faculdade", "Faculdade"
+        ENEM = "enem", "ENEM"
+
     NIVEL_CHOICES = [
         ("iniciante", "Iniciante"),
         ("intermediario", "Intermediário"),
@@ -16,6 +21,10 @@ class Cronograma(ModeloBase):
     tempo_por_dia = models.CharField(max_length=50)
     nivel = models.CharField(max_length=20, choices=NIVEL_CHOICES)
     complemento = models.TextField(blank=True)
+    tipo = models.CharField(max_length=20, choices=Tipo.choices, default=Tipo.TEMA)
+    instituicao = models.CharField(max_length=200, blank=True)
+    curso = models.CharField(max_length=200, blank=True)
+    fontes = models.JSONField(default=list, blank=True)
 
     def __str__(self):
         return self.nome
@@ -27,6 +36,7 @@ class EtapaCronograma(ModeloBase):
     descricao = models.TextField(blank=True)
     concluida = models.BooleanField(default=False)
     ordem = models.PositiveIntegerField(default=0)
+    recursos = models.JSONField(default=list, blank=True)
 
     class Meta:
         ordering = ["ordem"]

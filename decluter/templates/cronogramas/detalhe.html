@@ -3,12 +3,51 @@
 {% block title %}{{ cronograma.nome }} — Decluter{% endblock %}
 
 {% block content %}
-<h2>{{ cronograma.nome }}</h2>
-<p class="content-subtitle">{{ cronograma.tema }} — {{ cronograma.get_nivel_display }}</p>
+<header class="cronograma-cabecalho">
+    <a href="{% url 'cronogramas:lista' %}">&larr; Cronogramas</a>
+    <h1>{{ cronograma.nome }}</h1>
+    <p>Tema: {{ cronograma.tema }} · {{ cronograma.get_nivel_display }} · {{ cronograma.tempo_por_dia }} por dia</p>
+    <p class="cronograma-progresso">{{ concluidas }} de {{ total }} etapas concluídas</p>
+</header>
 
-<ul>
-    {% for etapa in cronograma.etapas.all %}
-        <li>{{ etapa.ordem }}. {{ etapa.titulo }}</li>
+<p class="aviso-ia">As etapas são geradas por inteligência artificial e podem não ser 100% precisas. Confira as informações importantes em fontes confiáveis.</p>
+
+{% if cronograma.tipo != "tema" %}
+<section class="fontes">
+    {% if cronograma.fontes %}
+    <h2>Fontes consultadas</h2>
+    <ul>
+        {% for fonte in cronograma.fontes %}
+        <li><a href="{{ fonte.url }}" target="_blank" rel="noopener noreferrer">{{ fonte.titulo }}</a></li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p class="aviso-fontes">Não foi possível consultar fontes públicas agora. Este cronograma foi baseado no conhecimento geral da IA e pode estar desatualizado.</p>
+    {% endif %}
+</section>
+{% endif %}
+
+<ol class="etapas">
+    {% for etapa in etapas %}
+    <li class="etapa {% if etapa.concluida %}etapa--concluida{% endif %}">
+        <form method="post" action="{% url 'cronogramas:etapa_alternar' etapa.id %}">
+            {% csrf_token %}
+            <button type="submit">{% if etapa.concluida %}Desmarcar{% else %}Marcar como concluída{% endif %}</button>
+        </form>
+
+        <h2>{{ etapa.titulo }}</h2>
+        <p>{{ etapa.descricao|linebreaksbr }}</p>
+
+        {% if etapa.recursos %}
+        <ul class="etapa-recursos">
+            {% for r in etapa.recursos %}
+            <li><a href="{{ r.url }}" target="_blank" rel="noopener noreferrer">{{ r.titulo }}</a> <span class="recurso-tipo">({{ r.tipo }})</span></li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    </li>
+    {% empty %}
+    <li>Este cronograma não tem etapas.</li>
     {% endfor %}
-</ul>
+</ol>
 {% endblock %}
