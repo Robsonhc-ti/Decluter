@@ -1,0 +1,28 @@
+{% extends "base_app.html" %}
+
+{% block title %}Cronograma do ENEM — Decluter{% endblock %}
+
+{% block content %}
+{% if messages %}
+<ul class="mensagens">
+    {% for m in messages %}
+    <li class="mensagem mensagem--{{ m.tags }}">{{ m }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+<header class="cronograma-cabecalho">
+    <a href="{% url 'cronogramas:criar' %}">&larr; Novo cronograma</a>
+    <h1>Cronograma do ENEM</h1>
+    <p>Baseado na Matriz de Referência divulgada pelo INEP.</p>
+</header>
+
+<form method="post" class="cronograma-form"
+      onsubmit="var b=this.querySelector('button[type=submit]'); b.disabled=true; b.textContent='Pesquisando e gerando (pode levar até 1 minuto)...';">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Gerar cronograma</button>
+</form>
+
+<p class="aviso-ia">As informações são pesquisadas e geradas por inteligência artificial e podem não ser 100% precisas. Confira no site oficial do INEP.</p>
+{% endblock %}

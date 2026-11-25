@@ -3,10 +3,36 @@
 {% block title %}Novo cronograma — Decluter{% endblock %}
 
 {% block content %}
-<h2>Novo cronograma</h2>
-<form method="post" class="form-cronograma">
+{% if messages %}
+<ul class="mensagens">
+    {% for m in messages %}
+    <li class="mensagem mensagem--{{ m.tags }}">{{ m }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+<header class="cronograma-cabecalho">
+    <a href="{% url 'cronogramas:lista' %}">&larr; Cronogramas</a>
+    <h1>Novo cronograma</h1>
+</header>
+
+<aside class="dica-enem">
+    <strong>Dica: vai fazer o ENEM?</strong>
+    <p>Gere um cronograma baseado na Matriz de Referência oficial do ENEM.</p>
+    <a href="{% url 'cronogramas:criar_enem' %}">Criar cronograma do ENEM</a>
+</aside>
+
+<p class="atalho-faculdade">
+    Quer se preparar para um curso de faculdade?
+    <a href="{% url 'cronogramas:criar_faculdade' %}">Criar cronograma de faculdade</a>
+</p>
+
+<form method="post" class="cronograma-form"
+      onsubmit="var b=this.querySelector('button[type=submit]'); b.disabled=true; b.textContent='Gerando seu cronograma...';">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit" class="btn-primary">Gerar cronograma</button>
+    <button type="submit">Gerar cronograma</button>
 </form>
+
+<p class="aviso-ia">As etapas são geradas por inteligência artificial e podem não ser 100% precisas. Confira as informações importantes em fontes confiáveis.</p>
 {% endblock %}
