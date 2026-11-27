@@ -7,6 +7,7 @@ from django.db import transaction
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
+from django.utils.http import url_has_allowed_host_and_scheme
 from django.views.decorators.http import require_GET, require_http_methods, require_POST
 
 from .agenda import replanejar_atrasos, sincronizar_etapa
@@ -229,7 +230,14 @@ def sessao_alternar_view(request, pk):
     sessao.concluida = not sessao.concluida
     sessao.save(update_fields=["concluida", "atualizado_em"])
     sincronizar_etapa(sessao.etapa)
-    return redirect("cronogramas:detalhe", pk=sessao.etapa.cronograma_id)
+    destino = request.POST.get("next", "")
+    if destino and url_has_allowed_host_and_scheme(
+        destino,
+        allowed_hosts={request.get_host()},
+        require_https=request.is_secure(),
+    ):
+        return redirect(destino)
+    return redirect("dashboard")
 
 
 @login_required

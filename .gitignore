@@ -20,6 +20,7 @@ db.sqlite3-journal
 
 # Pastas de mídia/Uploads dos usuários (Opcional, mas recomendado)
 media/
+staticfiles/
 
 # Pastas do VS Code ou outros editores
 .vscode/

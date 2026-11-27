@@ -29,3 +29,14 @@ O **Decluter** é um SaaS educacional desenvolvido como Trabalho de Conclusão d
 - **Banco de Dados:** PostgreSQL (com suporte a JSONB)
 - **Inteligência Artificial:** Google Gemini API
 - **Design / UX:** Foco em usabilidade e heurísticas de Nielsen
+
+## Como publicar na Render
+
+1. Envie a branch do projeto para o repositório conectado à Render.
+2. No painel, selecione **New → Blueprint**, escolha o repositório e aplique o `render.yaml` da raiz. O serviço usa `decluter/` como diretório raiz; o `build.sh` instala `../requirements.txt`, coleta os arquivos estáticos e aplica as migrations.
+3. Configure `GEMINI_API_KEY`, `GEMINI_MODEL` e `DEMO_PASSWORD` nas variáveis do serviço. Quando `DEMO_PASSWORD` estiver definida, o build cria ou atualiza os usuários e dados de demonstração de forma idempotente.
+4. Troque os exemplos de `ALLOWED_HOSTS` e `CSRF_TRUSTED_ORIGINS` pelo domínio atribuído à aplicação. `RENDER_EXTERNAL_HOSTNAME` é incluído automaticamente pelos settings.
+
+Opcionalmente, configure `DJANGO_SUPERUSER_EMAIL` e `DJANGO_SUPERUSER_PASSWORD` nas variáveis do serviço para criar um superusuário durante o build, caso ainda não exista. O username será derivado da parte local do email. Não publique arquivos `.env` nem senhas.
+
+O Blueprint fixa Python 3.13.14 e cria um serviço web e PostgreSQL no plano gratuito. O PostgreSQL gratuito expira após 30 dias; exporte os dados antes desse prazo se precisar preservá-los.

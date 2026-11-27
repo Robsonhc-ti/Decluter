@@ -1,0 +1,44 @@
+services:
+  - type: web
+    name: decluter-web
+    runtime: python
+    plan: free
+    region: oregon
+    rootDir: decluter
+    buildCommand: ./build.sh
+    startCommand: gunicorn decluter.wsgi:application --timeout 120 --workers 2
+    buildFilter:
+      paths:
+        - decluter/**
+        - requirements.txt
+        - render.yaml
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.13.14"
+      - key: DATABASE_URL
+        fromDatabase:
+          name: decluter-db
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DEBUG
+        value: "0"
+      - key: ALLOWED_HOSTS
+        value: decluter-web.onrender.com
+      - key: CSRF_TRUSTED_ORIGINS
+        value: https://decluter-web.onrender.com
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: GEMINI_MODEL
+        sync: false
+      - key: CELERY_ALWAYS_EAGER
+        value: "1"
+      - key: DEMO_PASSWORD
+        sync: false
+
+databases:
+  - name: decluter-db
+    plan: free
+    region: oregon
+    databaseName: decluter
+    user: decluter

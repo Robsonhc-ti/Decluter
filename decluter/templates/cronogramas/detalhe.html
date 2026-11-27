@@ -41,6 +41,7 @@
             <li class="sessao">
                 <form method="post" action="{% url 'cronogramas:sessao_alternar' sessao.pk %}">
                     {% csrf_token %}
+                    <input type="hidden" name="next" value="{% url 'cronogramas:detalhe' cronograma.pk %}">
                     <label>
                         <input
                             type="checkbox"
