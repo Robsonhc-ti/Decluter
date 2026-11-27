@@ -3,6 +3,14 @@
 {% block title %}Cronogramas — Decluter{% endblock %}
 
 {% block content %}
+{% if messages %}
+<div role="alert" aria-live="polite">
+    {% for message in messages %}
+    <p>{{ message }}</p>
+    {% endfor %}
+</div>
+{% endif %}
+
 <div class="content-header" style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px;">
     <div>
         <h2 style="margin: 0 0 4px 0;">Meus cronogramas</h2>
@@ -23,6 +31,10 @@
         <div class="cronograma-card">
             <div class="cronograma-nome">{{ c.nome }}</div>
             <div class="cronograma-info">{{ c.tema }} — {{ c.get_nivel_display }}</div>
+            {% if c.status == "gerando" %}
+            <p class="cronograma-status">Gerando...</p>
+            {% endif %}
+            <a href="{% url 'cronogramas:excluir' c.pk %}">Excluir cronograma</a>
         </div>
         {% endfor %}
     </div>

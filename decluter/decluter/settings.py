@@ -32,6 +32,12 @@ GEMINI_FALLBACK_MODELS = [
     for m in os.environ.get("GEMINI_FALLBACK_MODELS", "gemini-3.6-flash,gemini-3.5-flash-lite").split(",")
     if m.strip()
 ]
+CELERY_BROKER_URL = os.environ.get(
+    "CELERY_BROKER_URL",
+    "redis://localhost:6379/0",
+)
+CELERY_TASK_ALWAYS_EAGER = os.environ.get("CELERY_ALWAYS_EAGER", "0").strip() == "1"
+CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -55,7 +61,6 @@ INSTALLED_APPS = [
     'projetos',
     'boards',
     'cronogramas',
-    'comunicacao',
     'notificacoes',
 ]
 
@@ -128,7 +133,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'pt-br'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = "America/Sao_Paulo"
 
 USE_I18N = True
 

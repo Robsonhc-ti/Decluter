@@ -1,4 +1,4 @@
-﻿{% extends "base_app.html" %}
+{% extends "base_app.html" %}
 
 {% block title %}{{ cronograma.nome }} — Decluter{% endblock %}
 
@@ -7,47 +7,159 @@
     <a href="{% url 'cronogramas:lista' %}">&larr; Cronogramas</a>
     <h1>{{ cronograma.nome }}</h1>
     <p>Tema: {{ cronograma.tema }} · {{ cronograma.get_nivel_display }} · {{ cronograma.tempo_por_dia }} por dia</p>
-    <p class="cronograma-progresso">{{ concluidas }} de {{ total }} etapas concluídas</p>
 </header>
 
-<p class="aviso-ia">As etapas são geradas por inteligência artificial e podem não ser 100% precisas. Confira as informações importantes em fontes confiáveis.</p>
-
-{% if cronograma.tipo != "tema" %}
-<section class="fontes">
-    {% if cronograma.fontes %}
-    <h2>Fontes consultadas</h2>
-    <ul>
-        {% for fonte in cronograma.fontes %}
-        <li><a href="{{ fonte.url }}" target="_blank" rel="noopener noreferrer">{{ fonte.titulo }}</a></li>
-        {% endfor %}
-    </ul>
-    {% else %}
-    <p class="aviso-fontes">Não foi possível consultar fontes públicas agora. Este cronograma foi baseado no conhecimento geral da IA e pode estar desatualizado.</p>
-    {% endif %}
+{% if cronograma.status == "gerando" %}
+<section class="cronograma-gerando" aria-live="polite">
+    <p>Estamos montando seu cronograma, isso pode levar um minuto...</p>
 </section>
-{% endif %}
+{% elif cronograma.status == "falhou" %}
+<section class="cronograma-erro" aria-live="polite">
+    <h2>Vamos tentar de novo?</h2>
+    <p>{{ cronograma.erro|default:"Não foi possível montar seu cronograma agora. Você pode tentar novamente." }}</p>
+    <form method="post" action="{% url 'cronogramas:tentar_novamente' cronograma.pk %}">
+        {% csrf_token %}
+        <button type="submit">Tentar novamente</button>
+    </form>
+</section>
+{% elif cronograma.status == "pronto" %}
+<p class="cronograma-progresso">{{ concluidas }} de {{ total }} etapas concluídas</p>
 
-<ol class="etapas">
-    {% for etapa in etapas %}
-    <li class="etapa {% if etapa.concluida %}etapa--concluida{% endif %}">
-        <form method="post" action="{% url 'cronogramas:etapa_alternar' etapa.id %}">
-            {% csrf_token %}
-            <button type="submit">{% if etapa.concluida %}Desmarcar{% else %}Marcar como concluída{% endif %}</button>
-        </form>
+<p class="aviso-ia">
+    Este cronograma foi preparado com inteligência artificial e pode conter imprecisões.
+    Confira as informações importantes em fontes confiáveis.
+</p>
 
-        <h2>{{ etapa.titulo }}</h2>
-        <p>{{ etapa.descricao|linebreaksbr }}</p>
-
-        {% if etapa.recursos %}
-        <ul class="etapa-recursos">
-            {% for r in etapa.recursos %}
-            <li><a href="{{ r.url }}" target="_blank" rel="noopener noreferrer">{{ r.titulo }}</a> <span class="recurso-tipo">({{ r.tipo }})</span></li>
+<section class="agenda" aria-labelledby="agenda-titulo">
+    <h2 id="agenda-titulo">Agenda de estudos</h2>
+    {% regroup sessoes by data as sessoes_por_data %}
+    {% for grupo in sessoes_por_data %}
+    <section class="agenda-dia">
+        <h3>{{ grupo.grouper|date:"l, d/m/Y" }}</h3>
+        <ul>
+            {% for sessao in grupo.list %}
+            <li class="sessao">
+                <form method="post" action="{% url 'cronogramas:sessao_alternar' sessao.pk %}">
+                    {% csrf_token %}
+                    <label>
+                        <input
+                            type="checkbox"
+                            name="concluida"
+                            value="1"
+                            {% if sessao.concluida %}checked{% endif %}
+                            onchange="this.form.submit()"
+                        >
+                        {{ sessao.etapa.titulo }} — {{ sessao.minutos }} minutos
+                    </label>
+                    <noscript><button type="submit">Salvar alteração</button></noscript>
+                </form>
+            </li>
             {% endfor %}
         </ul>
-        {% endif %}
-    </li>
+    </section>
     {% empty %}
-    <li>Este cronograma não tem etapas.</li>
+    <p>Sua agenda ainda não tem sessões para exibir.</p>
     {% endfor %}
-</ol>
+</section>
+
+<section class="etapas" aria-labelledby="etapas-titulo">
+    <h2 id="etapas-titulo">Etapas do cronograma</h2>
+    <ol>
+        {% for etapa in etapas %}
+        <li class="etapa {% if etapa.concluida %}etapa--concluida{% endif %}">
+            <form method="post" action="{% url 'cronogramas:etapa_alternar' etapa.pk %}">
+                {% csrf_token %}
+                <button type="submit">
+                    {% if etapa.concluida %}Reabrir etapa{% else %}Marcar etapa como concluída{% endif %}
+                </button>
+            </form>
+
+            <h3>{{ etapa.titulo }}</h3>
+            <p>{{ etapa.descricao|linebreaksbr }}</p>
+            <p>Tempo estimado: {{ etapa.minutos_estimados }} minutos</p>
+
+            {% if etapa.recursos %}
+            <ul class="etapa-recursos">
+                {% for recurso in etapa.recursos %}
+                <li>
+                    <a href="{{ recurso.url }}" target="_blank" rel="noopener noreferrer">{{ recurso.titulo }}</a>
+                    <span class="recurso-tipo">({{ recurso.tipo }})</span>
+                </li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+        </li>
+        {% empty %}
+        <li>As etapas do seu cronograma ainda não estão disponíveis.</li>
+        {% endfor %}
+    </ol>
+</section>
+
+{% if cronograma.fontes %}
+<section class="fontes" aria-labelledby="fontes-titulo">
+    <h2 id="fontes-titulo">Fontes consultadas</h2>
+    <ul>
+        {% for fonte in cronograma.fontes %}
+        <li>
+            {% if fonte.url %}
+            <a href="{{ fonte.url }}" target="_blank" rel="noopener noreferrer">
+                {{ fonte.titulo|default:fonte.url }}
+            </a>
+            {% else %}
+            {{ fonte.titulo|default:"Fonte consultada" }}
+            {% endif %}
+        </li>
+        {% endfor %}
+    </ul>
+</section>
+{% endif %}
+{% endif %}
+{% endblock %}
+
+{% block extra_js %}
+{% if cronograma.status == "gerando" %}
+<script>
+(() => {
+    const statusUrl = "{% url 'cronogramas:status' cronograma.pk %}";
+    const controller = new AbortController();
+    let ativo = true;
+    let intervaloId;
+    let limiteId;
+
+    const pararPolling = () => {
+        if (!ativo) return;
+        ativo = false;
+        window.clearInterval(intervaloId);
+        window.clearTimeout(limiteId);
+        controller.abort();
+    };
+
+    const consultarStatus = async () => {
+        if (!ativo) return;
+        try {
+            const resposta = await fetch(statusUrl, {
+                cache: "no-store",
+                signal: controller.signal
+            });
+            if (!resposta.ok) return;
+
+            const dados = await resposta.json();
+            if (dados.status === "pronto" || dados.status === "falhou") {
+                pararPolling();
+                window.location.reload();
+            }
+        } catch {
+            // Uma falha temporária de rede não interrompe as próximas consultas.
+        }
+    };
+
+    intervaloId = window.setInterval(consultarStatus, 3000);
+    limiteId = window.setTimeout(() => {
+        pararPolling();
+        window.location.reload();
+    }, 5 * 60 * 1000);
+    window.addEventListener("pagehide", pararPolling, { once: true });
+})();
+</script>
+{% endif %}
 {% endblock %}

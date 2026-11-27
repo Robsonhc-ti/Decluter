@@ -1,0 +1,25 @@
+{% extends "base_app.html" %}
+
+{% block title %}Editar projeto — Decluter{% endblock %}
+
+{% block content %}
+{% if messages %}
+<div role="alert" aria-live="polite">
+    {% for message in messages %}
+    <p>{{ message }}</p>
+    {% endfor %}
+</div>
+{% endif %}
+
+<div class="form-pagina">
+    <h2>Editar projeto</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <div class="form-botoes">
+            <a href="{% url 'projetos:lista' %}" class="btn-secondary">Cancelar</a>
+            <button type="submit" class="btn-primary">Salvar alterações</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

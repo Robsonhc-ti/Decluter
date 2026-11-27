@@ -1,6 +1,11 @@
 ﻿from django.db import models
 from django.conf import settings
+from django.utils import timezone
 from core.models import ModeloBase
+
+
+def _dias_uteis_padrao():
+    return list(range(5))
 
 
 class Cronograma(ModeloBase):
@@ -8,6 +13,11 @@ class Cronograma(ModeloBase):
         TEMA = "tema", "Tema livre"
         FACULDADE = "faculdade", "Faculdade"
         ENEM = "enem", "ENEM"
+
+    class Status(models.TextChoices):
+        GERANDO = "gerando", "Gerando"
+        PRONTO = "pronto", "Pronto"
+        FALHOU = "falhou", "Falhou"
 
     NIVEL_CHOICES = [
         ("iniciante", "Iniciante"),
@@ -25,6 +35,14 @@ class Cronograma(ModeloBase):
     instituicao = models.CharField(max_length=200, blank=True)
     curso = models.CharField(max_length=200, blank=True)
     fontes = models.JSONField(default=list, blank=True)
+    status = models.CharField(
+        max_length=10,
+        choices=Status.choices,
+        default=Status.GERANDO,
+    )
+    erro = models.TextField(blank=True)
+    data_inicio = models.DateField(default=timezone.localdate)
+    dias_estudo = models.JSONField(default=_dias_uteis_padrao)
 
     def __str__(self):
         return self.nome
@@ -37,9 +55,27 @@ class EtapaCronograma(ModeloBase):
     concluida = models.BooleanField(default=False)
     ordem = models.PositiveIntegerField(default=0)
     recursos = models.JSONField(default=list, blank=True)
+    minutos_estimados = models.PositiveIntegerField(default=60)
 
     class Meta:
         ordering = ["ordem"]
 
     def __str__(self):
         return self.titulo
+
+
+class SessaoEstudo(ModeloBase):
+    etapa = models.ForeignKey(
+        EtapaCronograma,
+        on_delete=models.CASCADE,
+        related_name="sessoes",
+    )
+    data = models.DateField()
+    minutos = models.PositiveIntegerField()
+    concluida = models.BooleanField(default=False)
+
+    class Meta:
+        ordering = ["data", "etapa__ordem"]
+
+    def __str__(self):
+        return f"{self.etapa} — {self.data}"
