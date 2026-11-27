@@ -1,0 +1,13 @@
+{% extends "base_app.html" %}
+
+{% block title %}Excluir projeto — Decluter{% endblock %}
+
+{% block content %}
+<h2>Excluir projeto</h2>
+<p>Confirma a exclusão do projeto “{{ projeto.nome }}”?</p>
+<form method="post">
+    {% csrf_token %}
+    <button type="submit">Excluir projeto</button>
+    <a href="{% url 'projetos:lista' %}">Cancelar</a>
+</form>
+{% endblock %}

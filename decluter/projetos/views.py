@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.db import transaction
 from django.shortcuts import get_object_or_404, redirect, render
-from django.views.decorators.http import require_POST
+from django.views.decorators.http import require_http_methods, require_POST
 
 from boards.models import Board, Coluna
 
@@ -61,6 +61,46 @@ def criar_view(request):
         form = ProjetoForm()
 
     return render(request, "projetos/criar.html", {"form": form})
+
+
+@login_required
+@require_http_methods(["GET", "POST"])
+def editar_view(request, projeto_pk):
+    vinculo = _vinculo_do_usuario(request, projeto_pk)
+    _exigir_admin(vinculo)
+
+    if request.method == "POST":
+        form = ProjetoForm(request.POST, instance=vinculo.projeto)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Projeto atualizado com sucesso.")
+            return redirect("projetos:lista")
+        messages.error(request, "Não foi possível atualizar o projeto. Confira os campos.")
+    else:
+        form = ProjetoForm(instance=vinculo.projeto)
+
+    return render(request, "projetos/editar.html", {
+        "form": form,
+        "projeto": vinculo.projeto,
+    })
+
+
+@login_required
+@require_http_methods(["GET", "POST"])
+def excluir_view(request, projeto_pk):
+    vinculo = _vinculo_do_usuario(request, projeto_pk)
+    _exigir_admin(vinculo)
+    projeto = vinculo.projeto
+
+    if request.method == "POST":
+        nome = projeto.nome
+        projeto.delete()
+        messages.success(request, f"Projeto '{nome}' excluído com sucesso.")
+        return redirect("projetos:lista")
+
+    return render(request, "projetos/excluir_confirmacao.html", {
+        "projeto": projeto,
+    })
 
 
 @login_required
