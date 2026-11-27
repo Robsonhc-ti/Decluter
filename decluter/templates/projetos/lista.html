@@ -3,6 +3,14 @@
 {% block title %}Projetos — Decluter{% endblock %}
 
 {% block content %}
+{% if messages %}
+<div role="alert" aria-live="polite">
+    {% for message in messages %}
+    <p>{{ message }}</p>
+    {% endfor %}
+</div>
+{% endif %}
+
 <div class="content-header">
     <div>
         <h2>Projetos</h2>
@@ -14,10 +22,18 @@
 {% if participacoes %}
 <div class="cards-grid">
 {% for p in participacoes %}
-<a href="{% url 'boards:detalhe' p.projeto.id %}" class="card-item">
-    <div class="card-item-titulo">{{ p.projeto.nome }}</div>
-    <div class="card-item-info">{{ p.get_papel_display }}</div>
-</a>
+<div class="card-item">
+    <a href="{% url 'boards:detalhe' p.projeto.id %}">
+        <div class="card-item-titulo">{{ p.projeto.nome }}</div>
+        <div class="card-item-info">{{ p.get_papel_display }}</div>
+    </a>
+    {% if p.eh_admin %}
+    <p>
+        <a href="{% url 'projetos:editar' p.projeto.id %}">Editar</a>
+        <a href="{% url 'projetos:excluir' p.projeto.id %}">Excluir</a>
+    </p>
+    {% endif %}
+</div>
 {% endfor %}
 </div>
 {% else %}

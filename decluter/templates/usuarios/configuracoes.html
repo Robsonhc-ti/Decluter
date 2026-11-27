@@ -1,0 +1,48 @@
+{% extends "base_app.html" %}
+
+{% block title %}Configurações — Decluter{% endblock %}
+
+{% block content %}
+{% if messages %}
+<div role="alert" aria-live="assertive">
+    {% for mensagem in messages %}
+    <p>{{ mensagem }}</p>
+    {% endfor %}
+</div>
+{% endif %}
+
+<header>
+    <h1>Configurações</h1>
+</header>
+
+<section id="perfil" aria-labelledby="perfil-titulo">
+    <h2 id="perfil-titulo">Perfil</h2>
+    <form method="post" action="#perfil">
+        {% csrf_token %}
+        {{ perfil_form.as_p }}
+        <button type="submit" name="salvar_perfil">Salvar perfil</button>
+    </form>
+</section>
+
+<section id="seguranca" aria-labelledby="seguranca-titulo">
+    <h2 id="seguranca-titulo">Segurança</h2>
+    <form method="post" action="#seguranca">
+        {% csrf_token %}
+        {{ senha_form.as_p }}
+        <button type="submit" name="alterar_senha">Alterar senha</button>
+    </form>
+</section>
+
+<section aria-labelledby="aparencia-titulo">
+    <h2 id="aparencia-titulo">Aparência</h2>
+    <button id="alternar-tema" type="button">Alternar modo claro/escuro</button>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document
+        .getElementById("alternar-tema")
+        .addEventListener("click", alternarTema);
+</script>
+{% endblock %}

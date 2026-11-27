@@ -1,0 +1,13 @@
+{% extends "base_app.html" %}
+
+{% block title %}Excluir cronograma — Decluter{% endblock %}
+
+{% block content %}
+<h2>Excluir cronograma</h2>
+<p>Confirma a exclusão do cronograma “{{ cronograma.nome }}”?</p>
+<form method="post">
+    {% csrf_token %}
+    <button type="submit">Excluir cronograma</button>
+    <a href="{% url 'cronogramas:lista' %}">Cancelar</a>
+</form>
+{% endblock %}
